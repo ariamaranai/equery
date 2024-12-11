@@ -3,8 +3,7 @@ let f =async (a, b, c)=>
   navigator.onLine && chrome.tabs[
     typeof a == "object" ?
       (b = +a.menuItemId, a = a.selectionText, "create") :
-      (b = [" - pedigreequery"," - jbis"," - sporthorse"," - allpedigree"].indexOf(
-        a.slice(c = a.lastIndexOf("-") - 1)) >= 0 && (a = a.slice(0, c)), "update")
+      ((b = [" - pedigreequery"," - jbis"," - sporthorse"," - allpedigree"].indexOf(a.slice(c = a.lastIndexOf("-") - 1))) >= 0 && (a = a.slice(0, c)), "update")
   ]({
     url: b >= 0 ? (
       a = a.trim().toLowerCase().replaceAll(" ", "+"),
