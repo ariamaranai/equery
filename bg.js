@@ -1,4 +1,4 @@
-(({ contextMenus, omnibox, runtime, tabs }) => {
+(chrome => {
   let generateUrl = (id, q) => {
     if (id == 1) {
       return "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q;
@@ -41,7 +41,7 @@
     }
     return url;
   };
-  let open = (id, q, create_update) => tabs[create_update]({
+  let open = (id, q, create_update) => chrome.tabs[create_update]({
     url: id
       ? generateUrl(id, q.trim().replaceAll(" ", "+"))
       : generateUrlForNetkeiba(q)
@@ -66,10 +66,9 @@
     }
     open(id, q, "update");
   };
-
-  contextMenus.onClicked.addListener(searchFromContextMenus);
-  omnibox.onInputEntered.addListener(searchFromOmnibox);
-  omnibox.onInputChanged.addListener((q, suggest) => (
+  chrome.contextMenus.onClicked.addListener(searchFromContextMenus);
+  chrome.omnibox.onInputEntered.addListener(searchFromOmnibox);
+  chrome.omnibox.onInputChanged.addListener((q, suggest) => (
     chrome.omnibox.setDefaultSuggestion({
       description: q + " - netkeiba",
     }),
@@ -78,9 +77,9 @@
       return { content: s, description: s };
     }))
   ));
-  runtime.onInstalled.addListener(() => {
+  chrome.runtime.onInstalled.addListener(() => {
     for (let i = 0; i < 5; ++i)
-      contextMenus.create({
+      chrome.contextMenus.create({
         id: i + "",
         title: ["netkeiba", "jbis", "pedigreequery", "sporthorse", "allpedigree"][i],
         contexts: ["selection"]
