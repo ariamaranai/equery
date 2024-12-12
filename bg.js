@@ -1,37 +1,88 @@
-{
-let f =async (a, b, c)=>
-  navigator.onLine && chrome.tabs[
-    typeof a == "object" ?
-      (b = +a.menuItemId, a = a.selectionText, "create") :
-      ((b = [" - pedigreequery"," - jbis"," - sporthorse"," - allpedigree"].indexOf(a.slice(c = a.lastIndexOf("-") - 1))) >= 0 && (a = a.slice(0, c)), "update")
-  ]({
-    url: b >= 0 ? (
-      a = a.trim().toLowerCase().replaceAll(" ", "+"),
-      !b || b > 2 ?
-        (b = b ? "https://www.allbreedpedigree.com/" : "https://www.pedigreequery.com/") +
-        ((await fetch (b + a + "2", {method: "HEAD"})).status < 201 ? "index.php?query_type=check&search_bar=horse&h=" + a + "&g=5&inbred=Standard" : a) :
-      (b < 2 ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" : "https://sporthorse-data.com/search/pedigree?keys=") + a
-    ) : (()=> {
-      c = ""
-      let  i = (a = a.trim()).length
-      while (c = ((b = a[--i]) < "{" ? b : b > "=" && b < "ヷ" ? "%a5%" + (b.charCodeAt() - 12288).toString(16) : b == "" ? "+" : b == "ー" ? "%a1%bc" : b == "の" ? "%a4%ce" : b == "Ⅱ" ? "II": "")  + c, i);
-      return "https://db.netkeiba.com/?pid=horse_list&word=" + c
-    })()
-  })
-chrome.contextMenus.onClicked.addListener(f)
-chrome.omnibox.onInputEntered.addListener(f)
-}
-chrome.omnibox.onInputChanged.addListener((t, s)=> (
-  chrome.omnibox.setDefaultSuggestion({description: t + " - netkeiba"}),
-  s([" - pedigreequery"," - jbis"," - sporthorse"," - allpedigree"].map(v => {
-    let k = t + v
-    return {content: k, description: k}
-  })
-)))
-chrome.runtime.onInstalled.addListener(()=> (
-  chrome.contextMenus.create({id: "-1", title: "netkeiba", contexts: ["selection"]}),
-  chrome.contextMenus.create({id: "0", title: "pedigreequery", contexts: ["selection"]}),
-  chrome.contextMenus.create({id: "1", title: "jbis", contexts: ["selection"]}),
-  chrome.contextMenus.create({id: "2", title: "sporthorse", contexts: ["selection"]}),
-  chrome.contextMenus.create({id: "3", title: "allpedigree", contexts: ["selection"]})
-))
+(({ contextMenus, omnibox, runtime, tabs }) => {
+  let generateUrl = (id, q) => {
+    if (id == 1) {
+      return "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q;
+    } else if (id == 3) {
+      return "https://sporthorse-data.com/search/pedigree?keys=" + q;
+    } else {
+      let host =
+        id == 2
+          ? "https://www.allbreedpedigree.com/"
+          : "https://www.pedigreequery.com/";
+      return fetch(host + q + "2", { method: "HEAD" }).then(
+        (r) =>
+          host +
+          (r.status == 200
+            ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
+            : q)
+      );
+    }
+  };
+  let generateUrlForNetkeiba = q => {
+    let _q = q.trim();
+    let url = "https://db.netkeiba.com/?pid=horse_list&word=";
+    for (let i = 0; i < _q.length; ++i) {
+      let c = _q[i];
+      let charCode = q.charCodeAt(i);
+      url +=
+        charCode == 32
+          ? "+"
+          : charCode < 123
+          ? c
+          : charCode > 12448 && charCode < 12535
+          ? "%a5%" + (charCode - 12288).toString(16)
+          : charCode > 12352 && charCode < 12436
+          ? "%a4%" + (charCode - 12192).toString(16)
+          : charCode == 12540
+          ? "%a1%bc"
+          : charCode == 8545
+          ? "II"
+          : "";
+    }
+    return url;
+  };
+  let open = (id, q, create_update) => tabs[create_update]({
+    url: id
+      ? generateUrl(id, q.trim().replaceAll(" ", "+"))
+      : generateUrlForNetkeiba(q)
+  });
+  let searchFromContextMenus = info => open(
+    +info.menuItemId, info.selectionText, "create"
+  );
+  let searchFromOmnibox = q => {
+    let id = 0;
+    if (q.slice(-7) == " - jbis") {
+      q = q.slice(0, -7);
+      id = 1;
+    } else if (q.slice(-16) == " - pedigreequery") {
+      q = q.slice(0, -16);
+      id = 2;
+    } else if (q.slice(0, -13) == "- sporthorse") {
+      q = q.slice(0, -13);
+      id = 3;
+    } else if (q.slice(0, -14) == " - allpedigree") {
+      q = q.slice(0, -14);
+      id = 4;
+    }
+    open(id, q, "update");
+  };
+  contextMenus.onClicked.addListener(searchFromContextMenus);
+  omnibox.onInputEntered.addListener(searchFromOmnibox);
+  omnibox.onInputChanged.addListener((q, suggest) => (
+    chrome.omnibox.setDefaultSuggestion({
+      description: q + " - netkeiba",
+    }),
+    suggest([" - jbis", " - pedigreequery", " - sporthorse", " - allpedigree"].map(v => {
+      let s = q + v;
+      return { content: s, description: s };
+    }))
+  ));
+  runtime.onInstalled.addListener(() => {
+    for (let i = 0; i < 5; ++i)
+      contextMenus.create({
+        id: i + "",
+        title: ["netkeiba", "jbis", "pedigreequery", "sporthorse", "allpedigree"][i],
+        contexts: ["selection"]
+      });
+  });
+})(chrome);
