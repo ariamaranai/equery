@@ -66,6 +66,7 @@
     }
     open(id, q, "update");
   };
+
   contextMenus.onClicked.addListener(searchFromContextMenus);
   omnibox.onInputEntered.addListener(searchFromOmnibox);
   omnibox.onInputChanged.addListener((q, suggest) => (
