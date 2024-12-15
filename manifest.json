@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "equiry",
+  "name": "equery",
   "version": "0",
   "description": "Search for horses",
   "icons": {
@@ -10,7 +10,8 @@
     "keyword": "eq"
   },
   "permissions": [
-    "contextMenus"
+    "contextMenus",
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"

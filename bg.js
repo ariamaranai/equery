@@ -1,50 +1,43 @@
 (chrome => {
-  let generateUrl = (id, q) => {
-    if (id == 1) {
-      return "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q;
-    } else if (id == 3) {
-      return "https://sporthorse-data.com/search/pedigree?keys=" + q;
-    } else {
-      let host =
-        id == 2
-          ? "https://www.allbreedpedigree.com/"
-          : "https://www.pedigreequery.com/";
-      return fetch(host + q + "2", { method: "HEAD" }).then(
-        (r) =>
-          host +
-          (r.status == 200
-            ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
-            : q)
-      );
-    }
-  };
-  let generateUrlForNetkeiba = q => {
-    let _q = q.trim();
-    let url = "https://db.netkeiba.com/?pid=horse_list&word=";
-    for (let i = 0; i < _q.length; ++i) {
-      let c = _q[i];
-      let charCode = q.charCodeAt(i);
-      url +=
-        charCode == 32
-          ? "+"
-          : charCode < 123
-          ? c
-          : charCode > 12448 && charCode < 12535
-          ? "%a5%" + (charCode - 12288).toString(16)
-          : charCode > 12352 && charCode < 12436
-          ? "%a4%" + (charCode - 12192).toString(16)
-          : charCode == 12540
-          ? "%a1%bc"
-          : charCode == 8545
-          ? "II"
-          : "";
-    }
-    return url;
-  };
-  let open = (id, q, create_update) => chrome.tabs[create_update]({
+  let open = async (id, q, create_update) => chrome.tabs[create_update]({
     url: id
-      ? generateUrl(id, q.trim().replaceAll(" ", "+"))
-      : generateUrlForNetkeiba(q)
+      ? (
+        q = q.trim().replaceAll(" ", "+"),
+        id == 1
+          ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
+          : id == 3
+          ? "https://sporthorse-data.com/search/pedigree?keys=" + q
+          : (id =
+              id == 2
+                ? "https://www.pedigreequery.com/"
+                : "https://www.allbreedpedigree.com/") +
+            ((await fetch(id + q + "2", { method: "HEAD" })).status == 200
+              ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
+              : q.toLowerCase())
+      )
+      : (()=> {
+        q = q.trim()
+        let url = "https://db.netkeiba.com/?pid=horse_list&word=";
+        for (let i = 0; i < q.length; ++i) {
+          let c = q[i];
+          let charCode = q.charCodeAt(i);
+          url +=
+            charCode == 32
+              ? "+"
+              : charCode < 123
+              ? c
+              : charCode > 12448 && charCode < 12535
+              ? "%a5%" + (charCode - 12288).toString(16)
+              : charCode > 12352 && charCode < 12436
+              ? "%a4%" + (charCode - 12192).toString(16)
+              : charCode == 12540
+              ? "%a1%bc"
+              : charCode == 8545
+              ? "II"
+              : "";
+        }
+        return url;
+      })()
   });
   let searchFromContextMenus = info => open(
     +info.menuItemId, info.selectionText, "create"
