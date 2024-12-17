@@ -50,10 +50,10 @@
     } else if (q.slice(-16) == " - pedigreequery") {
       q = q.slice(0, -16);
       id = 2;
-    } else if (q.slice(0, -13) == "- sporthorse") {
+    } else if (q.slice(-13) == " - sporthorse") {
       q = q.slice(0, -13);
       id = 3;
-    } else if (q.slice(0, -14) == " - allpedigree") {
+    } else if (q.slice(-14) == " - allpedigree") {
       q = q.slice(0, -14);
       id = 4;
     }
