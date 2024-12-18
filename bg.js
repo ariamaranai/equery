@@ -1,10 +1,9 @@
 (chrome => {
-  let open = async (id, q, create_update) => (
-    q = q.trim().normalize("NFKD"),
+  let open = async (id, q, create_update) =>
     chrome.tabs[create_update]({
       url: id
         ? (
-          q = q.replace(/[\u0300-\u036f]/g, "").replaceAll(" ", "+"),
+          q = q.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll(" ", "+"),
           id == 1
             ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
             : id == 3
@@ -18,6 +17,7 @@
               : q.toLowerCase())
         )
         : (()=> {
+          q = q.trim();
           let url = "https://db.netkeiba.com/?pid=horse_list&word=";
           for (let i = 0; i < q.length; ++i) {
             let c = q[i];
@@ -39,8 +39,7 @@
           }
           return url;
       })()
-    })
-  );
+    });
   let searchFromContextMenus = info => open(
     +info.menuItemId, info.selectionText, "create"
   );
