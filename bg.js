@@ -3,10 +3,10 @@
     chrome.tabs[create_update]({
       url: id
         ? (
-          q = q.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replaceAll(" ", "+"),
+          q = q.trim().replaceAll(" ", "+"),
           id == 1
             ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
-            : id == 3
+            : (q = q.normalize("NFD").replace(/[\u0300-\u036f]/g, ""), id == 3)
             ? "https://sporthorse-data.com/search/pedigree?keys=" + q
             : (id =
                 id == 2
