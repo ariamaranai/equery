@@ -1,44 +1,46 @@
 (chrome => {
-  let open = async (id, q, create_update) => chrome.tabs[create_update]({
-    url: id
-      ? (
-        q = q.trim().replaceAll(" ", "+"),
-        id == 1
-          ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
-          : id == 3
-          ? "https://sporthorse-data.com/search/pedigree?keys=" + q
-          : (id =
-              id == 2
-                ? "https://www.pedigreequery.com/"
-                : "https://www.allbreedpedigree.com/") +
-            ((await fetch(id + q + "2", { method: "HEAD" })).status == 200
+  let open = async (id, q, create_update) => (
+    q = q.trim().normalize("NFKD"),
+    chrome.tabs[create_update]({
+      url: id
+        ? (
+          q = q.replace(/[\u0300-\u036f]/g, "").replaceAll(" ", "+"),
+          id == 1
+            ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
+            : id == 3
+            ? "https://sporthorse-data.com/search/pedigree?keys=" + q
+            : (id =
+                id == 2
+                  ? "https://www.pedigreequery.com/"
+                  : "https://www.allbreedpedigree.com/") +
+              ((await fetch(id + q + "2", { method: "HEAD" })).status == 200
               ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
               : q.toLowerCase())
-      )
-      : (()=> {
-        q = q.trim()
-        let url = "https://db.netkeiba.com/?pid=horse_list&word=";
-        for (let i = 0; i < q.length; ++i) {
-          let c = q[i];
-          let charCode = q.charCodeAt(i);
-          url +=
-            charCode == 32
-              ? "+"
-              : charCode < 123
-              ? c
-              : charCode > 12448 && charCode < 12535
-              ? "%a5%" + (charCode - 12288).toString(16)
-              : charCode > 12352 && charCode < 12436
-              ? "%a4%" + (charCode - 12192).toString(16)
-              : charCode == 12540
-              ? "%a1%bc"
-              : charCode == 8545
-              ? "II"
-              : "";
-        }
-        return url;
+        )
+        : (()=> {
+          let url = "https://db.netkeiba.com/?pid=horse_list&word=";
+          for (let i = 0; i < q.length; ++i) {
+            let c = q[i];
+            let charCode = q.charCodeAt(i);
+            url +=
+              charCode == 32
+                ? "+"
+                : charCode < 123
+                ? c
+                : charCode > 12448 && charCode < 12535
+                ? "%a5%" + (charCode - 12288).toString(16)
+                : charCode > 12352 && charCode < 12436
+                ? "%a4%" + (charCode - 12192).toString(16)
+                : charCode == 12540
+                ? "%a1%bc"
+                : charCode == 8545
+                ? "II"
+                : "";
+          }
+          return url;
       })()
-  });
+    })
+  );
   let searchFromContextMenus = info => open(
     +info.menuItemId, info.selectionText, "create"
   );
