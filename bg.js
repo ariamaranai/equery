@@ -1,6 +1,6 @@
 (chrome => {
-  let open = async (id, q, create_update) =>
-    chrome.tabs[create_update]({
+  let open = async (id, q, index) => {
+    let props = {
       url: id
         ? (
           q = q.trim().replaceAll(" ", "+"),
@@ -17,33 +17,38 @@
               : q.toLowerCase())
         )
         : (()=> {
-          q = q.trim();
-          let url = "https://db.netkeiba.com/?pid=horse_list&word=";
-          for (let i = 0; i < q.length; ++i) {
-            let c = q[i];
-            let charCode = q.charCodeAt(i);
-            url +=
-              charCode == 32
-                ? "+"
-                : charCode < 123
-                ? c
-                : charCode > 12448 && charCode < 12535
-                ? "%a5%" + (charCode - 12288).toString(16)
-                : charCode > 12352 && charCode < 12436
-                ? "%a4%" + (charCode - 12192).toString(16)
-                : charCode == 12540
-                ? "%a1%bc"
-                : charCode == 8545
-                ? "II"
-                : "";
-          }
-          return url;
-      })()
-    });
-  let searchFromContextMenus = info => open(
-    +info.menuItemId, info.selectionText, "create"
+            q = q.trim();
+            let url = "https://db.netkeiba.com/?pid=horse_list&word=";
+            for (let i = 0; i < q.length; ++i) {
+              let c = q[i];
+              let charCode = q.charCodeAt(i);
+              url +=
+                charCode == 32
+                  ? "+"
+                  : charCode < 123
+                  ? c
+                  : charCode > 12448 && charCode < 12535
+                  ? "%a5%" + (charCode - 12288).toString(16)
+                  : charCode > 12352 && charCode < 12436
+                  ? "%a4%" + (charCode - 12192).toString(16)
+                  : charCode == 12540
+                  ? "%a1%bc"
+                  : charCode == 8545
+                  ? "II"
+                  : "";
+              }
+            return url;
+          })()
+    };
+    chrome.tabs[index
+      ? (props.index = index, "create")
+      : "update"
+    ](props);
+  }
+  let searchFromContextMenus = (info, tab) => open(
+    +info.menuItemId, info.selectionText, tab.index + 1
   );
-  let searchFromOmnibox = q => {
+  let searchFromOmnibox = async q => {
     let id = 0;
     if (q.slice(-7) == " - jbis") {
       q = q.slice(0, -7);
@@ -58,7 +63,7 @@
       q = q.slice(0, -14);
       id = 4;
     }
-    open(id, q, "update");
+    open(id, q);
   };
   chrome.contextMenus.onClicked.addListener(searchFromContextMenus);
   chrome.omnibox.onInputEntered.addListener(searchFromOmnibox);
