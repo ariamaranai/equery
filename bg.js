@@ -1,5 +1,5 @@
 (chrome => {
-  let open = async (id, q, index) => {
+  let open = async (q, id, index) => {
     let props = {
       url: id
         ? (
@@ -9,8 +9,8 @@
             : (q = q.normalize("NFD").replace(/[\u0300-\u036f]/g, ""), id == 3)
             ? "https://sporthorse-data.com/search/pedigree?keys=" + q
             : (id = id == 2
-                  ? "https://www.pedigreequery.com/"
-                  : "https://www.allbreedpedigree.com/") +
+                ? "https://www.pedigreequery.com/"
+                : "https://www.allbreedpedigree.com/") +
               ((await fetch(id + q + "2", { method: "HEAD" })).status == 200
                 ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
                 : q.toLowerCase())
@@ -38,30 +38,23 @@
             return url;
           })()
     };
-    chrome.tabs[index
-      ? (props.index = index, "create")
-      : "update"
-    ](props);
+    chrome.tabs[index ? (props.index = index, "create") : "update"](props);
   }
-  let searchFromContextMenus = (info, tab) => open(
-    +info.menuItemId, info.selectionText, tab.index + 1
-  );
-  let searchFromOmnibox = async q => {
+  let searchFromContextMenus = (info, tab) => open(info.selectionText, +info.menuItemId, tab.index + 1);
+  let searchFromOmnibox = q => {
     let id = 0;
-    if (q.slice(-7) == " - jbis") {
-      q = q.slice(0, -7);
-      id = 1;
-    } else if (q.slice(-16) == " - pedigreequery") {
-      q = q.slice(0, -16);
-      id = 2;
-    } else if (q.slice(-13) == " - sporthorse") {
-      q = q.slice(0, -13);
-      id = 3;
-    } else if (q.slice(-14) == " - allpedigree") {
-      q = q.slice(0, -14);
-      id = 4;
-    }
-    open(id, q);
+    open(q.slice(0,
+        q.slice(-7) == " - jbis"
+      ? (id = 1, -7)
+      : q.slice(-16) == " - pedigreequery"
+      ? (id = 2, -16)
+      : q.slice(-13) == " - sporthorse"
+      ? (id = 3, -13)
+      : q.slice(-14) == " - allpedigree"
+      ? (id = 4, -14)
+      : q.length),
+      id
+    )
   }
   chrome.contextMenus.onClicked.addListener(searchFromContextMenus);
   chrome.omnibox.onInputEntered.addListener(searchFromOmnibox);
