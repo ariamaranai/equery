@@ -40,21 +40,24 @@
     };
     chrome.tabs[index ? (props.index = index, "create") : "update"](props);
   }
-  let searchFromContextMenus = (info, tab) => open(info.selectionText, +info.menuItemId, tab.index + 1);
+  let searchFromContextMenus = (info, tab) =>
+    navigator.onLine && open(info.selectionText, +info.menuItemId, tab.index + 1);
   let searchFromOmnibox = q => {
-    let id = 0;
-    open(q.slice(0,
-        q.slice(-7) == " - jbis"
-      ? (id = 1, -7)
-      : q.slice(-16) == " - pedigreequery"
-      ? (id = 2, -16)
-      : q.slice(-13) == " - sporthorse"
-      ? (id = 3, -13)
-      : q.slice(-14) == " - allpedigree"
-      ? (id = 4, -14)
-      : q.length),
-      id
-    )
+    if (navigator.onLine) {
+      let id = 0;
+      open(q.slice(0,
+          q.slice(-7) == " - jbis"
+        ? (id = 1, -7)
+        : q.slice(-16) == " - pedigreequery"
+        ? (id = 2, -16)
+        : q.slice(-13) == " - sporthorse"
+        ? (id = 3, -13)
+        : q.slice(-14) == " - allpedigree"
+        ? (id = 4, -14)
+        : q.length),
+        id
+      )
+    }
   }
   chrome.contextMenus.onClicked.addListener(searchFromContextMenus);
   chrome.omnibox.onInputEntered.addListener(searchFromOmnibox);
@@ -71,7 +74,7 @@
     for (let i = 0; i < 5; ++i)
       chrome.contextMenus.create({
         id: i + "",
-        title: ["netkeiba", "jbis", "pedigreequery", "sporthorse", "allpedigree"][i],
+        title: ["%s - netkeiba", "%s - jbis", "%s - pedigreequery", "%s - sporthorse", "%s - allpedigree"][i],
         contexts: ["selection"]
       });
   });
