@@ -6,12 +6,12 @@
           q = q.trim().replaceAll(" ", "+"),
           id == 1
           ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
-            : (q = q.normalize("NFD").replace(/[\u0300-\u036f]/g, ""), id == 3)
+            : (q = q.normalize("NFD").replace(/[`\u0300-\u036f]/g, ""), id == 3)
               ? "https://sporthorse-data.com/search/pedigree?keys=" + q
               : (id = id == 2 ? "https://www.pedigreequery.com/" : "https://www.allbreedpedigree.com/") +
-                (await fetch(id + q + "2", { method: "HEAD" })).status == 200
+                ((await fetch(id + q + "2", { method: "HEAD" })).status == 200
                   ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
-                  : q.toLowerCase()
+                  : q.toLowerCase())
         )
         : (()=> {
             q = q.trim();
