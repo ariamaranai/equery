@@ -62,21 +62,21 @@
   }
   chrome.contextMenus.onClicked.addListener(searchFromContextMenus);
   chrome.omnibox.onInputEntered.addListener(searchFromOmnibox);
-  chrome.omnibox.onInputChanged.addListener((q, suggest) => (
-    chrome.omnibox.setDefaultSuggestion({
-      description: q + " - netkeiba",
-    }),
-    suggest([" - jbis", " - pedigreequery", " - sporthorse", " - allpedigree"].map(v => {
-      let s = q + v;
-      return { content: s, description: s };
-    }))
-  ));
-  chrome.runtime.onInstalled.addListener(() => {
-    for (let i = 0; i < 5; ++i)
-      chrome.contextMenus.create({
-        id: i + "",
-        title: ["%s - netkeiba", "%s - jbis", "%s - pedigreequery", "%s - sporthorse", "%s - allpedigree"][i],
-        contexts: ["selection"]
-      });
-  });
 }
+chrome.omnibox.onInputChanged.addListener((q, suggest) => (
+  chrome.omnibox.setDefaultSuggestion({
+    description: q + " - netkeiba",
+  }),
+  suggest([" - jbis", " - pedigreequery", " - sporthorse", " - allpedigree"].map(v => {
+    let s = q + v;
+    return { content: s, description: s };
+  }))
+));
+chrome.runtime.onInstalled.addListener(() => {
+  for (let i = 0; i < 5; ++i)
+    chrome.contextMenus.create({
+      id: i + "",
+      title: ["%s - netkeiba", "%s - jbis", "%s - pedigreequery", "%s - sporthorse", "%s - allpedigree"][i],
+      contexts: ["selection"]
+    });
+});
