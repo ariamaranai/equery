@@ -1,4 +1,4 @@
-(chrome => {
+{
   let open = async (q, id, index) => {
     let props = {
       url: id
@@ -79,4 +79,4 @@
         contexts: ["selection"]
       });
   });
-})(chrome);
+}
