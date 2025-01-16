@@ -2,14 +2,14 @@
 {
   let open = async (q, id, index) => {
     let props = {
-      url: id
+      url: id != 1
         ? (
           q = q.trim().replaceAll(" ", "+"),
-          id == 1
+          id == 2
           ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
             : (q = q.normalize("NFD").replace(/[^a-zA-Z+]/g, ""), id == 3)
               ? "https://sporthorse-data.com/search/pedigree?keys=" + q
-              : (id = id == 2 ? "https://www.pedigreequery.com/" : "https://www.allbreedpedigree.com/") +
+              : (id = id ? "https://www.allbreedpedigree.com/" : "https://www.pedigreequery.com/" ) +
                 ((await fetch(id + q + "2", { method: "HEAD" })).status == 200
                   ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
                   : q.toLowerCase())
@@ -47,16 +47,18 @@
   let searchFromOmnibox = q => {
     if (navigator.onLine) {
       let id = 0;
-      open(q.slice(0,
+      open(
+        q.slice(0,
           q.slice(-7) == " - jbis"
-        ? (id = 1, -7)
-        : q.slice(-16) == " - pedigreequery"
-        ? (id = 2, -16)
-        : q.slice(-13) == " - sporthorse"
-        ? (id = 3, -13)
-        : q.slice(-14) == " - allpedigree"
-        ? (id = 4, -14)
-        : q.length),
+          ? (id = 1, -7)
+          : q.slice(-16) == " - pedigreequery"
+          ? (id = 2, -16)
+          : q.slice(-13) == " - sporthorse"
+          ? (id = 3, -13)
+          : q.slice(-14) == " - allpedigree"
+          ? (id = 4, -14)
+          : q.length
+        ),
         id
       )
     }
@@ -66,9 +68,9 @@
 }
 chrome.omnibox.onInputChanged.addListener((q, suggest) => (
   chrome.omnibox.setDefaultSuggestion({
-    description: q + " - netkeiba",
+    description: q + " - pedigreequery"
   }),
-  suggest([" - jbis", " - pedigreequery", " - sporthorse", " - allpedigree"].map(v => {
+  suggest([" - netkeiba", " - jbis", " - sporthorse", " - allpedigree"].map(v => {
     let s = q + v;
     return { content: s, description: s };
   }))
@@ -77,7 +79,7 @@ chrome.runtime.onInstalled.addListener(() => {
   for (let i = 0; i < 5; ++i)
     chrome.contextMenus.create({
       id: i + "",
-      title: ["%s - netkeiba", "%s - jbis", "%s - pedigreequery", "%s - sporthorse", "%s - allpedigree"][i],
+      title: ["%s - pedigreequery", "%s - netkeiba", "%s - jbis", "%s - sporthorse", "%s - allpedigree"][i],
       contexts: ["selection"]
     });
 });
