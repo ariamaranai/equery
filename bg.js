@@ -1,21 +1,21 @@
 
 {
-  let open = async (q, id, index) => {
+  let open = async (_q, id, index) => {
+    let q = _q.trim();
     let props = {
       url: id != 1
         ? (
-          q = q.trim().replaceAll(" ", "+"),
+          q = q.replaceAll(" ", "+"),
           id == 2
           ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
             : (q = q.normalize("NFD").replace(/[^a-zA-Z+]/g, ""), id == 3)
               ? "https://sporthorse-data.com/search/pedigree?keys=" + q
               : (id = id ? "https://www.allbreedpedigree.com/" : "https://www.pedigreequery.com/" ) +
-                ((await fetch(id + q + "2", { method: "HEAD" })).status == 200
+              ((await fetch(id + q + "2", { method: "HEAD" })).status == 200
                   ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
                   : q.toLowerCase())
         )
         : (()=> {
-            q = q.trim();
             let url = "https://db.netkeiba.com/?pid=horse_list&word=";
             for (let i = 0; i < q.length; ++i) {
               let charCode = q.charCodeAt(i);
