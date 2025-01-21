@@ -49,10 +49,10 @@
       let id = 0;
       open(
         q.slice(0,
-          q.slice(-7) == " - jbis"
-          ? (id = 1, -7)
-          : q.slice(-16) == " - pedigreequery"
-          ? (id = 2, -16)
+            q.slice(-11) == " - netkeiba"
+          ? (id = 1, -11)
+          : q.slice(-7) == " - jbis"
+          ? (id = 2, -7)
           : q.slice(-13) == " - sporthorse"
           ? (id = 3, -13)
           : q.slice(-14) == " - allpedigree"
@@ -66,6 +66,7 @@
   chrome.contextMenus.onClicked.addListener(searchFromContextMenus);
   chrome.omnibox.onInputEntered.addListener(searchFromOmnibox);
 }
+
 chrome.omnibox.onInputChanged.addListener((q, suggest) => (
   chrome.omnibox.setDefaultSuggestion({
     description: q + " - pedigreequery"
