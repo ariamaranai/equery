@@ -8,7 +8,7 @@
           q = q.replaceAll(" ", "+"),
           id == 2
           ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
-            : (q = q.normalize("NFD").replace(/[^+-a-zA-Z]/g, ""), id == 3)
+            : (q = q.normalize("NFD").replace(/[^a-zA-Z+-]/g, ""), id == 3)
               ? "https://sporthorse-data.com/search/pedigree?keys=" + q
               : (id = id ? "https://www.allbreedpedigree.com/" : "https://www.pedigreequery.com/" ) +
               ((await fetch(id + q + "2", { method: "HEAD" })).status == 200
