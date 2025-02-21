@@ -66,7 +66,6 @@
   chrome.contextMenus.onClicked.addListener(searchFromContextMenus);
   chrome.omnibox.onInputEntered.addListener(searchFromOmnibox);
 }
-
 chrome.omnibox.onInputChanged.addListener((q, suggest) => (
   chrome.omnibox.setDefaultSuggestion({
     description: q + " - pedigreequery"

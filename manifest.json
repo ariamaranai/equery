@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "equery",
   "version": "0",
-  "description": "Search for horses by contextMenus and omnibox",
+  "description": "Search for horse name",
   "icons": {
     "128": "128.png"
   },
