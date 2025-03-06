@@ -1,4 +1,3 @@
-
 {
   let open = async (_q, id, index) => {
     let q = _q.trim();
@@ -17,7 +16,8 @@
         )
         : (()=> {
             let url = "https://db.netkeiba.com/?pid=horse_list&word=";
-            for (let i = 0; i < q.length; ++i) {
+            let i = 0;
+            while (i < q.length) {
               let charCode = q.charCodeAt(i);
               url +=
                 charCode == 32
