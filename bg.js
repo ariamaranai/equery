@@ -71,10 +71,11 @@ chrome.omnibox.onInputChanged.addListener((q, suggest) => (
   chrome.omnibox.setDefaultSuggestion({
     description: q + " - pedigreequery"
   }),
-  suggest([" - netkeiba", " - jbis", " - sporthorse", " - allpedigree"].map(v => {
-    let s = q + v;
-    return { content: s, description: s };
-  }))
+  suggest([" - netkeiba", " - jbis", " - sporthorse", " - allpedigree"].reduce((acc, val, idx) => {
+    let s = q + val;
+    acc[idx] = { content: s, description: s };
+    return acc;
+  }, [0, 0, 0, 0]))
 ));
 chrome.runtime.onInstalled.addListener(() => {
   let i = 0;
