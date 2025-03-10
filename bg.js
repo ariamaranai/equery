@@ -6,7 +6,7 @@
         ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
         : (q = q.normalize("NFD").replace(/[^a-zA-Z+-]/g, ""), id == 3)
           ? "https://sporthorse-data.com/search/pedigree?keys=" + q
-          : (id = id ? "https://www.allbreedpedigree.com/" : "https://www.pedigreequery.com/" ) +
+          : (id = id ? "https://www.allbreedpedigree.com/" : "https://www.pedigreequery.com/") +
             ((await fetch(id + q + "2", { method: "HEAD" })).status == 200
               ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
               : q.toLowerCase())
@@ -66,11 +66,10 @@ chrome.omnibox.onInputChanged.addListener((q, suggest) => (
   chrome.omnibox.setDefaultSuggestion({
     description: q + " - pedigreequery"
   }),
-  suggest([" - netkeiba", " - jbis", " - sporthorse", " - allpedigree"].reduce((acc, val, idx) => {
+  suggest([" - netkeiba", " - jbis", " - sporthorse", " - allpedigree"].map(v => {
     let s = q + val;
-    acc[idx] = { content: s, description: s };
-    return acc;
-  }, [0, 0, 0, 0]))
+    return { content: s, description: s }
+  }))
 ));
 chrome.runtime.onInstalled.addListener(() => {
   let i = 0;
