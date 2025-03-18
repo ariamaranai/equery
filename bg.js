@@ -67,7 +67,7 @@ chrome.omnibox.onInputChanged.addListener((q, suggest) => (
     description: q + " - pedigreequery"
   }),
   suggest([" - netkeiba", " - jbis", " - sporthorse", " - allpedigree"].map(v => {
-    let s = q + val;
+    let s = q + v;
     return { content: s, description: s }
   }))
 ));
