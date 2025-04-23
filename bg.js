@@ -6,10 +6,12 @@
         ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
         : (q = q.normalize("NFD").replace(/[^a-zA-Z+-]/g, ""), id == 3)
           ? "https://sporthorse-data.com/search/pedigree?keys=" + q
-          : (id = id ? "https://www.allbreedpedigree.com/" : "https://www.pedigreequery.com/") +
-            ((await fetch(id + q + "2", { method: "HEAD" })).ok
-              ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
-              : q.toLowerCase())
+          : id != 5
+            ? (id = id ? "https://www.allbreedpedigree.com/" : "https://www.pedigreequery.com/") +
+              ((await fetch(id + q + "2", { method: "HEAD" })).ok
+                ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
+                : q.toLowerCase())
+            : "https://www.horsetelex.com/horses/search?name=" + q
       : (()=> {
           let url = "https://db.netkeiba.com/?pid=horse_list&word=";
           let i = 0;
@@ -53,6 +55,8 @@
           ? (id = 3, -13)
           : q.slice(-14) == " - allpedigree"
           ? (id = 4, -14)
+          : q.slice(-13) == " - horsetelex"
+          ? (id = 5, -13)
           : q.length
         ),
         id
@@ -66,16 +70,29 @@ chrome.omnibox.onInputChanged.addListener((q, suggest) => (
   chrome.omnibox.setDefaultSuggestion({
     description: q + " - pedigreequery"
   }),
-  suggest([" - netkeiba", " - jbis", " - sporthorse", " - allpedigree"].map(v => {
+  suggest([
+    " - netkeiba",
+    " - jbis",
+    " - sporthorse",
+    " - allpedigree",
+    " - horsetelex"
+  ].map(v => {
     let s = q + v;
     return { content: s, description: s }
   }))
 ));
 chrome.runtime.onInstalled.addListener(() => {
   let i = 0;
-  while(i < 5)
+  while(i < 6)
     chrome.contextMenus.create({
-      title: ["%s - pedigreequery", "%s - netkeiba", "%s - jbis", "%s - sporthorse", "%s - allpedigree"][i],
+      title: [
+        "%s - pedigreequery",
+        "%s - netkeiba",
+        "%s - jbis",
+        "%s - sporthorse",
+        "%s - allpedigree",
+        "%s - horsetelex"
+      ][i],
       id: i++ + "",
       contexts: ["selection"]
     });
