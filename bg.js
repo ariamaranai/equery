@@ -1,5 +1,5 @@
 {
-  let open = async (_q, id, index) => {
+  let f = async (_q, id, index) => {
     let q = _q.trim();
     let url = id != 1
       ? (q = q.replaceAll(" ", "+"), id == 2)
@@ -35,17 +35,21 @@
           }
           return url;
       })();
-    index ? chrome.tabs.create({ url, index }) : chrome.tabs.update({ url });
+    index
+      ? chrome.tabs.create({ url, index })
+      : chrome.tabs.update({ url });
   }
-  let searchFromContextMenus = async (info, tab) => navigator.onLine && open(
-    info.selectionText,
-    +info.menuItemId,
-    tab.index + 1 || (await chrome.tabs.query({ active: !0, currentWindow: !0 }))[0].index + 1
+  chrome.contextMenus.onClicked.addListener(async (info, tab) =>
+    navigator.onLine && f(
+      info.selectionText,
+      +info.menuItemId,
+      tab.index + 1 || (await chrome.tabs.query({ active: !0, currentWindow: !0 }))[0].index + 1
+    )
   );
-  let searchFromOmnibox = q => {
+  chrome.omnibox.onInputEntered.addListener(q => {
     if (navigator.onLine) {
       let id = 0;
-      open(
+      f(
         q.slice(0,
             q.slice(-11) == " - netkeiba"
           ? (id = 1, -11)
@@ -62,9 +66,7 @@
         id
       )
     }
-  }
-  chrome.contextMenus.onClicked.addListener(searchFromContextMenus);
-  chrome.omnibox.onInputEntered.addListener(searchFromOmnibox);
+  });
 }
 chrome.omnibox.onInputChanged.addListener((q, suggest) => (
   chrome.omnibox.setDefaultSuggestion({
