@@ -89,7 +89,7 @@ chrome.omnibox.onInputChanged.addListener((q, suggest) => {
 });
 chrome.runtime.onInstalled.addListener(() => {
   let i = 0;
-  while(i < 6)
+  while (
     chrome.contextMenus.create({
       title: [
         "%s - pedigreequery",
@@ -99,7 +99,9 @@ chrome.runtime.onInstalled.addListener(() => {
         "%s - allpedigree",
         "%s - horsetelex"
       ][i],
-      id: i++ + "",
+      id: i + "",
       contexts: ["selection"]
-    });
+    }),
+    ++i < 6
+  );
 });
