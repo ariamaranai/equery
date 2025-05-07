@@ -39,11 +39,11 @@
       ? chrome.tabs.create({ url, index })
       : chrome.tabs.update({ url });
   }
-  chrome.contextMenus.onClicked.addListener(async (info, tab) =>
+  chrome.contextMenus.onClicked.addListener((info, tab) =>
     navigator.onLine && f(
       info.selectionText,
       +info.menuItemId,
-      tab.index + 1 || (await chrome.tabs.query({ active: !0, currentWindow: !0 }))[0].index + 1
+      tab.index + 1
     )
   );
   chrome.omnibox.onInputEntered.addListener(q => {
@@ -68,21 +68,25 @@
     }
   });
 }
-chrome.omnibox.onInputChanged.addListener((q, suggest) => (
+chrome.omnibox.onInputChanged.addListener((q, suggest) => {
   chrome.omnibox.setDefaultSuggestion({
     description: q + " - pedigreequery"
-  }),
-  suggest([
+  });
+  let ss = [
     " - netkeiba",
     " - jbis",
     " - sporthorse",
     " - allpedigree",
     " - horsetelex"
-  ].map(v => {
-    let s = q + v;
-    return { content: s, description: s }
-  }))
-));
+  ];
+  let i = 0;
+  while (i < 5) {
+    let s = q + ss[i];
+    ss[i] = { content: s, description: s }; 
+    ++i
+  }
+  suggest(ss);
+});
 chrome.runtime.onInstalled.addListener(() => {
   let i = 0;
   while(i < 6)
