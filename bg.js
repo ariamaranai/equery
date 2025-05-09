@@ -80,11 +80,11 @@ chrome.omnibox.onInputChanged.addListener((q, suggest) => {
     " - horsetelex"
   ];
   let i = 0;
-  while (i < 5) {
-    let s = q + ss[i];
-    ss[i] = { content: s, description: s }; 
-    ++i
-  }
+  let s = 0;
+  while (
+    ss[i] = { content: s = q + ss[i], description: s },
+    i < 4
+  ) ++i;
   suggest(ss);
 });
 chrome.runtime.onInstalled.addListener(() => {
