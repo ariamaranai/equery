@@ -102,6 +102,6 @@ chrome.runtime.onInstalled.addListener(() => {
       id: i + "",
       contexts: ["selection"]
     }),
-    ++i < 6
-  );
+    i < 5
+  ) ++i;
 });
