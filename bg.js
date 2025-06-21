@@ -39,11 +39,11 @@
       ? chrome.tabs.create({ url, index })
       : chrome.tabs.update({ url });
   }
-  chrome.contextMenus.onClicked.addListener((info, tab) =>
+  chrome.contextMenus.onClicked.addListener(async (info, tab) =>
     navigator.onLine && f(
       info.selectionText,
       +info.menuItemId,
-      tab.index + 1
+      tab.index + 1 || (await chrome.tabs.query({ active: !0, currentWindow: !0 }))[0].id + 1
     )
   );
   chrome.omnibox.onInputEntered.addListener(q => {
@@ -64,7 +64,7 @@
           : q.length
         ),
         id
-      )
+      );
     }
   });
 }
