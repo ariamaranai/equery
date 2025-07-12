@@ -1,5 +1,5 @@
 {
-  let f = async (_q, id, index) => {
+  let f = (_q, id, index) => {
     let q = _q.trim();
     let url = id != 1
       ? (q = q.replaceAll(" ", "+"), id == 2)
@@ -7,10 +7,10 @@
         : (q = q.normalize("NFD").replace(/[^a-zA-Z+-]/g, ""), id == 3)
           ? "https://sporthorse-data.com/search/pedigree?keys=" + q
           : id != 5
-            ? (id = id ? "https://www.allbreedpedigree.com/" : "https://www.pedigreequery.com/") +
-              ((await fetch(id + q + "2", { method: "HEAD" })).ok
-                ? "index.php?query_type=check&search_bar=horse&h=" + q + "&g=5&inbred=Standard"
-                : q.toLowerCase())
+            ?
+              (id
+                ? "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
+                : "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h=") + q
             : "https://www.horsetelex.com/horses/search?name=" + q
       : (()=> {
           let url = "https://db.netkeiba.com/?pid=horse_list&word=";
