@@ -3,18 +3,19 @@
     let q = _q.trim();
     let url = 0;
     if (id != 1) {
+      q = q.replaceAll(" ", "+");
       if (id == 2)
-        q = q.replaceAll(" ", "+"),
         url = "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
-      else if (id == 3)
-        q = q.normalize("NFD").replace(/[^a-zA-Z+-]/g, ""),
-        url = "https://sporthorse-data.com/search/pedigree?keys=" + q
       else
         url = (
-          id != 5 ? id ? "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
-                       : "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
-          : "https://www.horsetelex.com/horses/search?name="
-        ) + q;
+          id == 3 
+            ? "https://sporthorse-data.com/search/pedigree?keys="
+            : id != 5
+              ? id
+                ? "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
+                : "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
+              : "https://www.horsetelex.com/horses/search?name="
+        ) + q.normalize("NFD").replace(/[^a-zA-Z+-]/g, "")
     } else {
       url = "https://db.netkeiba.com/?pid=horse_list&word=";
       let i = 0;
@@ -30,9 +31,7 @@
         ++i;
       }
     }
-    index
-      ? chrome.tabs.create({ url, index })
-      : chrome.tabs.update({ url });
+    index ? chrome.tabs.create({ url, index }) : chrome.tabs.update({ url });
   }
   chrome.contextMenus.onClicked.addListener(async (info, tab) =>
     f(info.selectionText, +info.menuItemId, tab.index + 1 || (await chrome.tabs.query({ active: !0, currentWindow: !0 }))[0].id + 1)
