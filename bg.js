@@ -20,14 +20,14 @@
       url = "https://db.netkeiba.com/?pid=horse_list&word=";
       let i = 0;
       while (i < q.length) {
-        let charCode = q.charCodeAt(i);
+        let cc = q.charCodeAt(i);
         url +=
-            charCode == 32 ? "+"
-          : charCode < 123 ? q[i]
-          : charCode > 12448 && charCode < 12535 ? "%a5%" + (charCode - 12288).toString(16)
-          : charCode > 12352 && charCode < 12436 ? "%a4%" + (charCode - 12192).toString(16)
-          : charCode == 12540 ? "%a1%bc"
-          : charCode == 8545 ? "II" : "";
+            cc == 32 ? "+"
+          : cc < 123 ? q[i]
+          : cc > 12448 && charCode < 12535 ? "%a5%" + (cc - 12288).toString(16)
+          : cc > 12352 && charCode < 12436 ? "%a4%" + (cc - 12192).toString(16)
+          : cc == 12540 ? "%a1%bc"
+          : cc == 8545 ? "II" : "";
         ++i;
       }
     }
@@ -42,18 +42,10 @@
   });
 }
 chrome.omnibox.onInputChanged.addListener((q, suggest) => {
-  chrome.omnibox.setDefaultSuggestion({
-    description: q + " - pedigreequery"
-  });
-  let ss = [
-    " - netkeiba",
-    " - jbis",
-    " - sporthorse",
-    " - allpedigree",
-    " - horsetelex"
-  ];
-  let i = 0;
+  chrome.omnibox.setDefaultSuggestion({ description: q + " - pedigreequery" });
   let s = 0;
+  let i = 0;
+  let ss = [" - netkeiba"," - jbis", "- sporthorse"," - allpedigree"," - horsetelex"];
   while (
     ss[i] = { content: s = q + ss[i], description: s },
     i < 4
@@ -65,14 +57,7 @@ chrome.runtime.onInstalled.addListener(() => {
   let id = "0";
   while (
     chrome.contextMenus.create({
-      title: [
-        "%s - pedigreequery",
-        "%s - netkeiba",
-        "%s - jbis",
-        "%s - sporthorse",
-        "%s - allpedigree",
-        "%s - horsetelex"
-      ][i],
+      title: ["%s - pedigreequery","%s - netkeiba","%s - jbis","%s - sporthorse","%s - allpedigree","%s - horsetelex"][i],
       id,
       contexts: ["selection"]
     }),
