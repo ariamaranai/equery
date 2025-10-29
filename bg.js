@@ -37,16 +37,8 @@
     f(info.selectionText, +info.menuItemId, tab.index + 1 || (await chrome.tabs.query({ active: !0, currentWindow: !0 }))[0].id + 1)
   );
   chrome.omnibox.onInputEntered.addListener(q => {
-    let id = 0;
-    f(q.slice(0,
-      q.slice(-11) == " - netkeiba" ? (id = 1, -11) :
-      q.slice(-7) == " - jbis" ? (id = 2, -7) :
-      q.slice(-13) == " - sporthorse" ? (id = 3, -13) :
-      q.slice(-14) == " - allpedigree" ? (id = 4, -14) :
-      q.slice(-13) == " - horsetelex" ? (id = 5, -13) :
-      q.length),
-      id
-    );
+    let match = q.match(/ - (netkeiba|jbis|sporthorse|allpedigree|horsetelex)$/);
+    f(match ? q.slice(0, match.index) : q, match && { netkeiba: 1, jbis: 2, sporthorse: 3, allpedigree: 4, horsetelex: 5 }[match[1]]);
   });
 }
 chrome.omnibox.onInputChanged.addListener((q, suggest) => {
