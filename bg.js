@@ -1,7 +1,7 @@
 {
   let f = (_q, id, index) => {
     let q = _q.trim();
-    let url = 0;
+    let url = "https://db.netkeiba.com/?pid=horse_list&word=";
     if (id != 1) {
       q = q.replaceAll(" ", "+");
       if (id == 2)
@@ -17,7 +17,6 @@
               : "https://www.horsetelex.com/horses/search?name="
         ) + q.normalize("NFD").replace(/[^a-zA-Z+-]/g, "")
     } else {
-      url = "https://db.netkeiba.com/?pid=horse_list&word=";
       let i = 0;
       while (i < q.length) {
         let cc = q.charCodeAt(i);
@@ -37,6 +36,7 @@
     f(info.selectionText, +info.menuItemId, tab.index + 1 || (await chrome.tabs.query({ active: !0, currentWindow: !0 }))[0].id + 1)
   );
   chrome.omnibox.onInputEntered.addListener(q => {
+    console.log(q);
     let match = q.match(/ - (netkeiba|jbis|sporthorse|allpedigree|horsetelex)$/);
     f(match ? q.slice(0, match.index) : q, match && { netkeiba: 1, jbis: 2, sporthorse: 3, allpedigree: 4, horsetelex: 5 }[match[1]]);
   });
@@ -45,7 +45,7 @@ chrome.omnibox.onInputChanged.addListener((q, suggest) => {
   chrome.omnibox.setDefaultSuggestion({ description: q + " - pedigreequery" });
   let s = 0;
   let i = 0;
-  let ss = [" - netkeiba"," - jbis", "- sporthorse"," - allpedigree"," - horsetelex"];
+  let ss = [" - netkeiba"," - jbis", " - sporthorse"," - allpedigree"," - horsetelex"];
   while (
     ss[i] = { content: s = q + ss[i], description: s },
     i < 4
