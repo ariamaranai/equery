@@ -23,8 +23,8 @@
         url +=
             cc == 32 ? "+"
           : cc < 123 ? q[i]
-          : cc > 12448 && charCode < 12535 ? "%a5%" + (cc - 12288).toString(16)
-          : cc > 12352 && charCode < 12436 ? "%a4%" + (cc - 12192).toString(16)
+          : cc > 12448 && cc < 12535 ? "%a5%" + (cc - 12288).toString(16)
+          : cc > 12352 && cc < 12436 ? "%a4%" + (cc - 12192).toString(16)
           : cc == 12540 ? "%a1%bc"
           : cc == 8545 ? "II" : "";
         ++i;
@@ -36,7 +36,6 @@
     f(info.selectionText, +info.menuItemId, tab.index + 1 || (await chrome.tabs.query({ active: !0, currentWindow: !0 }))[0].id + 1)
   );
   chrome.omnibox.onInputEntered.addListener(q => {
-    console.log(q);
     let match = q.match(/ - (netkeiba|jbis|sporthorse|allpedigree|horsetelex)$/);
     f(match ? q.slice(0, match.index) : q, match && { netkeiba: 1, jbis: 2, sporthorse: 3, allpedigree: 4, horsetelex: 5 }[match[1]]);
   });
@@ -62,5 +61,5 @@ chrome.runtime.onInstalled.addListener(() => {
       contexts: ["selection"]
     }),
     i < 5
-  ) id = ++i + "";
+  ) id = String.fromCharCode(++i + 48);
 });
