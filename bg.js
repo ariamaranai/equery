@@ -42,24 +42,23 @@
 }
 chrome.omnibox.onInputChanged.addListener((q, suggest) => {
   chrome.omnibox.setDefaultSuggestion({ description: q + " - pedigreequery" });
-  let s = 0;
-  let i = 0;
-  let ss = [" - netkeiba"," - jbis", " - sporthorse"," - allpedigree"," - horsetelex"];
+  let s;
+  let ss = [" - netkeiba"," - jbis"," - sporthorse"," - allpedigree"," - horsetelex"];
+  let i = 5;
   while (
-    ss[i] = { content: s = q + ss[i], description: s },
-    i < 4
-  ) ++i;
+    ss[--i] = { content: s = q + ss[i], description: s },
+    i
+  );
   suggest(ss);
 });
 chrome.runtime.onInstalled.addListener(() => {
-  let i = 0;
-  let id = "0";
+  let i = 6;
   while (
     chrome.contextMenus.create({
-      title: ["%s - pedigreequery","%s - netkeiba","%s - jbis","%s - sporthorse","%s - allpedigree","%s - horsetelex"][i],
-      id,
+      title: ["%s - horsetelex","%s - sporthorse","%s - allpedigree","%s - jbis","%s - netkeiba","%s - pedigreequery"][--i],
+      id: "543210"[i],
       contexts: ["selection"]
     }),
-    i < 5
-  ) id = String.fromCharCode(++i + 48);
+    i
+  ) ;
 });
