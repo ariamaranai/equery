@@ -30,14 +30,14 @@
         ++i;
       }
     }
-    index ? chrome.tabs.create({ url, index }) : chrome.tabs.update({ url });
+    return index ? chrome.tabs.create({ url, index }) : chrome.tabs.update({ url });
   }
   chrome.contextMenus.onClicked.addListener(async (info, tab) =>
     f(info.selectionText, +info.menuItemId, tab.index + 1 || (await chrome.tabs.query({ active: !0, currentWindow: !0 }))[0].id + 1)
   );
   chrome.omnibox.onInputEntered.addListener(q => {
     let match = q.match(/ - (netkeiba|jbis|sporthorse|allpedigree|horsetelex)$/);
-    f(match ? q.slice(0, match.index) : q, match && { netkeiba: 1, jbis: 2, sporthorse: 3, allpedigree: 4, horsetelex: 5 }[match[1]]);
+    return f(match ? q.slice(0, match.index) : q, match && { netkeiba: 1, jbis: 2, sporthorse: 3, allpedigree: 4, horsetelex: 5 }[match[1]]);
   });
 }
 chrome.omnibox.onInputChanged.addListener((q, suggest) => {
@@ -49,7 +49,7 @@ chrome.omnibox.onInputChanged.addListener((q, suggest) => {
     ss[--i] = { content: s = q + ss[i], description: s },
     i
   );
-  suggest(ss);
+  return suggest(ss);
 });
 chrome.runtime.onInstalled.addListener(() => {
   let i = 6;
