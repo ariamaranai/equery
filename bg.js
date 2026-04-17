@@ -60,5 +60,5 @@ chrome.runtime.onInstalled.addListener(() => {
       contexts: ["selection"]
     }),
     i
-  ) ;
+  );
 });
