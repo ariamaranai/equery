@@ -1,7 +1,7 @@
 {
   let f = (_q, id, index) => {
     let q = _q.trim();
-    let url = "https://db.netkeiba.com/?pid=horse_list&word=";
+    let url;
     if (id != 1) {
       q = q.replaceAll(" ", "+");
       if (id == 2)
@@ -17,6 +17,7 @@
               : "https://www.horsetelex.com/horses/search?name="
         ) + q.normalize("NFD").replace(/[^a-zA-Z+-]/g, "")
     } else {
+      url = "https://db.netkeiba.com/?pid=horse_list&word=";
       let i = 0;
       while (i < q.length) {
         let cc = q.charCodeAt(i);
