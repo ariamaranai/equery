@@ -22,7 +22,7 @@
         let cc = q.charCodeAt(i);
         url +=
             cc == 32 ? "+"
-          : cc < 123 ? q[i]
+          : cc < 123 ? String.fromCharCode(cc)
           : cc > 12448 && cc < 12535 ? "%a5%" + (cc - 12288).toString(16)
           : cc > 12352 && cc < 12436 ? "%a4%" + (cc - 12192).toString(16)
           : cc == 12540 ? "%a1%bc"
@@ -61,4 +61,5 @@ chrome.runtime.onInstalled.addListener(() => {
     }),
     i
   );
+  return 0;
 });
