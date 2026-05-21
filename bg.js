@@ -10,11 +10,11 @@
         url = (
           id == 3 
             ? "https://sporthorse-data.com/search/pedigree?keys="
-            : id != 5
-              ? id
+            : id == 5
+              ? "https://www.horsetelex.com/horses/search?name="
+              : id
                 ? "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
                 : "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
-              : "https://www.horsetelex.com/horses/search?name="
         ) + q.normalize("NFD").replace(/[^a-zA-Z+-]/g, "")
     } else {
       url = "https://db.netkeiba.com/?pid=horse_list&word=";
