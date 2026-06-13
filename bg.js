@@ -1,21 +1,7 @@
 {
   let f = (_q, id, index, url) => {
     let q = _q.trim();
-    if (id != 1) {
-      q = q.replaceAll(" ", "+");
-      if (id == 2)
-        url = "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
-      else
-        url = (
-          id == 3 
-            ? "https://sporthorse-data.com/search/pedigree?keys="
-            : id == 5
-              ? "https://www.horsetelex.com/horses/search?name="
-              : id
-                ? "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
-                : "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
-        ) + q.normalize("NFD").replace(/[^a-zA-Z+-]/g, "")
-    } else {
+    if (id == 1) {
       url = "https://db.netkeiba.com/?pid=horse_list&word=";
       let i = 0;
       while (i < q.length) {
@@ -29,6 +15,20 @@
           : cc == 8545 ? "II" : "";
         ++i;
       }
+    } else {
+      q = q.replaceAll(" ", "+");
+      if (id == 2)
+        url = "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
+      else
+        url = (
+          id == 3 
+            ? "https://sporthorse-data.com/search/pedigree?keys="
+            : id == 5
+              ? "https://www.horsetelex.com/horses/search?name="
+              : id
+                ? "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
+                : "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
+        ) + q.normalize("NFD").replace(/[^a-zA-Z+-]/g, "")
     }
     return index ? chrome.tabs.create({ url, index }) : chrome.tabs.update({ url });
   }
