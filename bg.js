@@ -1,7 +1,6 @@
 {
-  let f = (_q, id, index) => {
+  let f = (_q, id, index, url) => {
     let q = _q.trim();
-    let url;
     if (id != 1) {
       q = q.replaceAll(" ", "+");
       if (id == 2)
@@ -41,9 +40,8 @@
     return f(match ? q.slice(0, match.index) : q, match && { netkeiba: 1, jbis: 2, sporthorse: 3, allpedigree: 4, horsetelex: 5 }[match[1]]);
   });
 }
-chrome.omnibox.onInputChanged.addListener((q, suggest) => {
+chrome.omnibox.onInputChanged.addListener((q, suggest, s) => {
   chrome.omnibox.setDefaultSuggestion({ description: q + " - pedigreequery" });
-  let s;
   let ss = [" - netkeiba"," - jbis"," - sporthorse"," - allpedigree"," - horsetelex"];
   let i = 5;
   while (
