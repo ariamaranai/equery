@@ -18,17 +18,16 @@
     } else {
       q = q.replaceAll(" ", "+");
       if (id == 2)
-        url = "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q
+        url = "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q;
+      else if (id == 3)
+        url = "https://www.studbook.jp/users/ja/SearchBameiList?initial_forward=" + q;
       else
         url = (
-          id == 3 
-            ? "https://sporthorse-data.com/search/pedigree?keys="
-            : id == 5
-              ? "https://www.horsetelex.com/horses/search?name="
-              : id
-                ? "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
-                : "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
-        ) + q.normalize("NFD").replace(/[^a-zA-Z+-]/g, "")
+          id == 4 ? "https://sporthorse-data.com/search/pedigree?keys=" :
+          id == 6 ? "https://www.horsetelex.com/horses/search?name=" :
+          id ? "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
+             : "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
+        ) + q.normalize("NFD").replace(/[^a-zA-Z+-]/g, "");
     }
     return index ? chrome.tabs.create({ url, index }) : chrome.tabs.update({ url });
   }
@@ -36,14 +35,14 @@
     f(info.selectionText, +info.menuItemId, tab.index + 1 || (await chrome.tabs.query({ active: !0, currentWindow: !0 }))[0].id + 1)
   );
   chrome.omnibox.onInputEntered.addListener(q => {
-    let match = q.match(/ - (netkeiba|jbis|sporthorse|allpedigree|horsetelex)$/);
-    return f(match ? q.slice(0, match.index) : q, match && { netkeiba: 1, jbis: 2, sporthorse: 3, allpedigree: 4, horsetelex: 5 }[match[1]]);
+    let match = q.match(/ - (netkeiba|jbis|studbook|sporthorse|allpedigree|horsetelex)$/);
+    return f(match ? q.slice(0, match.index) : q, match && { netkeiba: 1, jbis: 2, studbook: 3, sporthorse: 4, allpedigree: 5, horsetelex: 6 }[match[1]]);
   });
 }
 chrome.omnibox.onInputChanged.addListener((q, suggest, s) => {
   chrome.omnibox.setDefaultSuggestion({ description: q + " - pedigreequery" });
-  let ss = [" - netkeiba"," - jbis"," - sporthorse"," - allpedigree"," - horsetelex"];
-  let i = 5;
+  let ss = [" - netkeiba"," - jbis"," - studbook"," - sporthorse"," - allpedigree"," - horsetelex"];
+  let i = 6;
   while (
     ss[--i] = { content: s = q + ss[i], description: s },
     i
@@ -51,11 +50,11 @@ chrome.omnibox.onInputChanged.addListener((q, suggest, s) => {
   return suggest(ss);
 });
 chrome.runtime.onInstalled.addListener(() => {
-  let i = 6;
+  let i = 7;
   while (
     chrome.contextMenus.create({
-      title: ["%s - horsetelex","%s - allpedigree","%s - sporthorse","%s - jbis","%s - netkeiba","%s - pedigreequery"][--i],
-      id: "543210"[i],
+      title: ["%s - horsetelex","%s - allpedigree","%s - sporthorse","%s - studbook","%s - jbis","%s - netkeiba","%s - pedigreequery"][--i],
+      id: "6543210"[i],
       contexts: ["selection"]
     }),
     i
