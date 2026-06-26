@@ -20,7 +20,7 @@
       if (id == 2)
         url = "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q;
       else if (id == 3)
-        url = "https://www.studbook.jp/users/ja/SearchBameiList?initial_forward=" + q;
+        url = "https://www.studbook.jp/users/ja/SearchBameiList?initial_forward=" + q.replace(/（.*/, "");
       else
         url = (
           id == 4 ? "https://sporthorse-data.com/search/pedigree?keys=" :
@@ -59,5 +59,5 @@ chrome.runtime.onInstalled.addListener(() => {
     }),
     i
   );
-  return 0;
+  return;
 });
