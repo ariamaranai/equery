@@ -47,14 +47,14 @@ chrome.omnibox.onInputChanged.addListener((q, suggest, $0) => {
     hosts[--i] = { content: $0 = q + hosts[i], description: $0 },
     i
   );
-  return suggest(ss);
+  return suggest(hosts);
 });
 chrome.runtime.onInstalled.addListener(() => {
   let i = 7;
   while (
     chrome.contextMenus.create({
       title: ["%s - horsetelex","%s - allpedigree","%s - sporthorse","%s - studbook","%s - jbis","%s - netkeiba","%s - pedigreequery"][--i],
-      id: "6543210"[i],
+      id: i + "",
       contexts: ["selection"]
     }),
     i
