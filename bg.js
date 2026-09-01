@@ -54,7 +54,7 @@ chrome.runtime.onInstalled.addListener(() => {
   while (
     chrome.contextMenus.create({
       title: ["%s - horsetelex","%s - allpedigree","%s - sporthorse","%s - studbook","%s - jbis","%s - netkeiba","%s - pedigreequery"][--i],
-      id: i + "",
+      id: "6543210"[i],
       contexts: ["selection"]
     }),
     i
