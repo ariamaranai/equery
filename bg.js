@@ -2,7 +2,7 @@
   let f = (_q, id, index, url) => {
     let q = _q.trim();
     if (id == 1) {
-      url = "https://db.netkeiba.com/?pid=horse_list&word=";
+      url = "https://db.netkeiba.com/horse/list.html?word=";
       let i = 0;
       while (i < q.length) {
         let cc = q.charCodeAt(i);
@@ -39,12 +39,12 @@
     return f(match ? q.slice(0, match.index) : q, match && { netkeiba: 1, jbis: 2, studbook: 3, sporthorse: 4, allpedigree: 5, horsetelex: 6 }[match[1]]);
   });
 }
-chrome.omnibox.onInputChanged.addListener((q, suggest, s) => {
+chrome.omnibox.onInputChanged.addListener((q, suggest, $0) => {
   chrome.omnibox.setDefaultSuggestion({ description: q + " - pedigreequery" });
-  let ss = [" - netkeiba"," - jbis"," - studbook"," - sporthorse"," - allpedigree"," - horsetelex"];
+  let hosts = [" - netkeiba"," - jbis"," - studbook"," - sporthorse"," - allpedigree"," - horsetelex"];
   let i = 6;
   while (
-    ss[--i] = { content: s = q + ss[i], description: s },
+    hosts[--i] = { content: $0 = q + hosts[i], description: $0 },
     i
   );
   return suggest(ss);
