@@ -25,7 +25,6 @@ chrome.runtime.onInstalled.addListener(() => {
 
 {
   let f = (_q, id, index, url) => {
-    console.log(id);
     let q = _q.trim();
     if (id == 1) {
       url = "https://db.netkeiba.com/horse/list.html?word=";
