@@ -60,8 +60,8 @@ chrome.runtime.onInstalled.addListener(() => {
 
   chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText }, { index }) =>
     ++index
-      ? chrome.tabs.query({ active: !0, currentWindow: !0 }, tabs => f(selectionText, menuItemId, tabs[0].id))
-      : f(selectionText, menuItemId, index)
+      ? f(selectionText, menuItemId, index)
+      : chrome.tabs.query({ active: !0, currentWindow: !0 }, tabs => f(selectionText, menuItemId, tabs[0].id))
   );
 
   chrome.omnibox.onInputEntered.addListener(q => {
