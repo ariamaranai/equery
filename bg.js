@@ -1,46 +1,6 @@
 onunhandledrejection = e => e.preventDefault();
-
-chrome.omnibox.onInputChanged.addListener((q, suggest, $0) => {
-  chrome.omnibox.setDefaultSuggestion({ description: q + " - pedigreequery" });
-  let hosts = [
-    " - equibase",
-    " - netkeiba",
-    " - jbis",
-    " - studbook",
-    " - sporthorse",
-    " - allpedigree",
-    " - horsetelex"
-  ];
-  let i = 7;
-  while (
-    hosts[--i] = { content: $0 = q + hosts[i], description: $0 },
-    i
-  );
-  return suggest(hosts);
-});
-chrome.runtime.onInstalled.addListener(() => {
-  let i = 8;
-  while (
-    chrome.contextMenus.create({
-      title: [
-        "%s - horsetelex",
-        "%s - allpedigree",
-        "%s - sporthorse",
-        "%s - studbook",
-        "%s - jbis",
-        "%s - netkeiba",
-        "%s - equibase",
-        "%s - pedigreequery"
-      ][--i],
-      id: "76543210"[i],
-      contexts: ["selection"]
-    }),
-    i
-  );
-  return;
-});
-
 {
+  let { contextMenus, omnibox, runtime, tabs } = chrome;
   let f = (_q, id, index, url) => {
     let q = _q.trim();
     if (id == 2 || id != 3 && id != 4 && q[0] > "぀") {
@@ -71,16 +31,30 @@ chrome.runtime.onInstalled.addListener(() => {
                     "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
         ) + q.normalize("NFD").replace(/[^a-zA-Z+-]/g, "");
     }
-    return index ? chrome.tabs.create({ url, index }) : chrome.tabs.update({ url });
+    return index ? tabs.create({ url, index }) : tabs.update({ url });
   }
 
-  chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText }, { index }) =>
-    ++index
-      ? f(selectionText, menuItemId, index)
-      : chrome.tabs.query({ active: !0, currentWindow: !0 }, tabs => f(selectionText, menuItemId, tabs[0].id))
-  );
+  omnibox.onInputChanged.addListener((q, suggest) => {
+    omnibox.setDefaultSuggestion({ description: q + " - pedigreequery" });
+    let hosts = [
+      " - equibase",
+      " - netkeiba",
+      " - jbis",
+      " - studbook",
+      " - sporthorse",
+      " - allpedigree",
+      " - horsetelex"
+    ];
+    let i = 7;
+    let description;
+    while (
+      hosts[--i] = { content: description = q + hosts[i], description },
+      i
+    );
+    return suggest(hosts);
+  });
 
-  chrome.omnibox.onInputEntered.addListener(q => {
+  omnibox.onInputEntered.addListener(q => {
     let index = q.indexOf(" - ");
     return index < 0
       ? f(q, 0)
@@ -94,5 +68,35 @@ chrome.runtime.onInstalled.addListener(() => {
                            q === "l" ? 6 :
                            q === "o" ? 7 : 0
         );
+  });
+
+  contextMenus.onClicked.addListener(({ menuItemId, selectionText }, { index }) =>
+    ++index
+      ? f(selectionText, menuItemId, index)
+      : tabs.query({ active: !0, currentWindow: !0 }, tabs =>
+          f(selectionText, menuItemId, tabs[0].id)
+        )
+  );
+
+  runtime.onInstalled.addListener(() => {
+    let i = 8;
+    while (
+      contextMenus.create({
+        title: [
+          "%s - horsetelex",
+          "%s - allpedigree",
+          "%s - sporthorse",
+          "%s - studbook",
+          "%s - jbis",
+          "%s - netkeiba",
+          "%s - equibase",
+          "%s - pedigreequery"
+        ][--i],
+        id: "76543210"[i],
+        contexts: ["selection"]
+      }),
+      i
+    );
+    return;
   });
 }
