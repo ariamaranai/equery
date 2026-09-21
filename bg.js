@@ -14,7 +14,7 @@ onunhandledrejection = e => e.preventDefault();
           : c === "ー" ? "%a1%bc"
           : c === "Ⅱ" ? "II"
           : (c = c.charCodeAt()) > 12448 && c < 12535 ? "%a5%" + (c - 12288).toString(16)
-          : c > 12352 && cc < 12436 ? "%a4%" + (cc - 12192).toString(16)
+          : c > 12352 && c < 12436 ? "%a4%" + (c - 12192).toString(16)
           : "";
         ++i;
       }
