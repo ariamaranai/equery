@@ -21,7 +21,7 @@ onunhandledrejection = e => e.preventDefault();
     } else {
       q = q.replaceAll(" ", "+");
       url =
-        id == 3 ? "https://www.jbis.or.jp/horse/result/?sid=horse&keyword=" + q :
+        id == 3 ? "https://www.jbis.or.jp/horse/result/?sid=horse&match=exact&keyword=" + q :
         id == 4 ? "https://www.studbook.jp/users/ja/SearchBameiList?initial_forward=" + q.replace(/（.*/, "") :
         (
           id == 1 ? "https://www.equibase.com/favicon.ico#" :
