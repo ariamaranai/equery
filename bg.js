@@ -4,7 +4,7 @@ onunhandledrejection = e => e.preventDefault();
   let f = (_q, id, index, url) => {
     let q = _q.trim();
     if (id == 2 || id != 3 && id != 4 && q[0] > "぀") {
-      url = "https://db.netkeiba.com/horse/list.html?word=";
+      url = "https://db.netkeiba.com/horse/list.html?match=m&word=";
       let i = 0;
       while (i < q.length) {
         let c = q[i];
