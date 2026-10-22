@@ -2,7 +2,7 @@ onunhandledrejection = e => e.preventDefault();
 {
   let { contextMenus, omnibox, runtime, tabs } = chrome;
   let f = (_q, id, index, url) => {
-    let q = _q.trim();
+    let q = _q.trim().normalize("NFKD");
     if (id == 2 || id != 3 && id != 4 && q[0] > "぀") {
       url = "https://db.netkeiba.com/horse/list.html?match=m&word=";
       let i = 0;
@@ -29,7 +29,7 @@ onunhandledrejection = e => e.preventDefault();
           id == 7 ? "https://www.horsetelex.com/horses/search?name=" :
           id == 0 ? "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h=" :
                     "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
-        ) + q.normalize("NFD").replace(/[^a-zA-Z+-]/g, "");
+        ) + q.replace(/[^a-zA-Z+-]/g, "");
     }
     return index ? tabs.create({ url, index }) : tabs.update({ url });
   }
