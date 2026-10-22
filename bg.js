@@ -2,7 +2,7 @@ onunhandledrejection = e => e.preventDefault();
 {
   let { contextMenus, omnibox, runtime, tabs } = chrome;
   let f = (_q, id, index, url) => {
-    let q = _q.trim().normalize("NFKD");
+    let q = _q.trim().normalize("NFKD").normalize("NFC");
     if (id == 2 || id != 3 && id != 4 && q[0] > "぀") {
       url = "https://db.netkeiba.com/horse/list.html?match=m&word=";
       let i = 0;
