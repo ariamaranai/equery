@@ -1,37 +1,44 @@
 onunhandledrejection = e => e.preventDefault();
 {
   let { contextMenus, omnibox, runtime, tabs } = chrome;
-  let f = (_q, id, index, url) => {
-    let q = _q.trim().normalize("NFKD").normalize("NFC");
-    if (id == 2 || id != 3 && id != 4 && q[0] > "぀") {
-      url = "https://db.netkeiba.com/horse/list.html?match=m&word=";
-      let i = 0;
-      while (i < q.length) {
-        let c = q[i];
-        url +=
-            c === " " ? "+"
-          : c < "{" ? c
-          : c === "ー" ? "%a1%bc"
-          : c === "Ⅱ" ? "II"
-          : (c = c.charCodeAt()) > 12448 && c < 12535 ? "%a5%" + (c - 12288).toString(16)
-          : c > 12352 && c < 12436 ? "%a4%" + (c - 12192).toString(16)
-          : "";
-        ++i;
+  let f = (_qs, id, index, url) => {
+    let qs = _qs.split(/[,、]/);
+    let i = qs.length;
+    while (i) {
+      let q = qs[--i].trim();
+      if (q) {
+        q = q.normalize("NFKD").normalize("NFC");
+        if (id == 2 || id != 3 && id != 4 && q[0] > "぀") {
+          url = "https://db.netkeiba.com/horse/list.html?match=m&word=";
+          let i = 0;
+          while (i < q.length) {
+            let c = q[i];
+            url +=
+                c === " " ? "+"
+              : c < "{" ? c
+              : c === "ー" ? "%a1%bc"
+              : c === "Ⅱ" ? "II"
+              : (c = c.charCodeAt()) > 12448 && c < 12535 ? "%a5%" + (c - 12288).toString(16)
+              : c > 12352 && c < 12436 ? "%a4%" + (c - 12192).toString(16)
+              : "";
+            ++i;
+          }
+        } else {
+          q = q.replaceAll(" ", "+");
+          url =
+            id == 3 ? "https://www.jbis.or.jp/horse/result/?sid=horse&match=exact&keyword=" + q :
+            id == 4 ? "https://www.studbook.jp/users/ja/SearchBameiList?initial_forward=" + q.replace(/（.*/, "") :
+            (
+              id == 1 ? "https://www.equibase.com/favicon.ico#" :
+              id == 5 ? "https://sporthorse-data.com/search/pedigree?keys=" :
+              id == 7 ? "https://www.horsetelex.com/horses/search?name=" :
+              id == 0 ? "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h=" :
+                        "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
+            ) + q.replace(/[^a-zA-Z+-]/g, "");
+        }
+        index || i ? tabs.create({ url, index, active: !1 }) : tabs.update({ url, active: !1 });
       }
-    } else {
-      q = q.replaceAll(" ", "+");
-      url =
-        id == 3 ? "https://www.jbis.or.jp/horse/result/?sid=horse&match=exact&keyword=" + q :
-        id == 4 ? "https://www.studbook.jp/users/ja/SearchBameiList?initial_forward=" + q.replace(/（.*/, "") :
-        (
-          id == 1 ? "https://www.equibase.com/favicon.ico#" :
-          id == 5 ? "https://sporthorse-data.com/search/pedigree?keys=" :
-          id == 7 ? "https://www.horsetelex.com/horses/search?name=" :
-          id == 0 ? "https://www.pedigreequery.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h=" :
-                    "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
-        ) + q.replace(/[^a-zA-Z+-]/g, "");
     }
-    return index ? tabs.create({ url, index }) : tabs.update({ url });
   }
 
   omnibox.onInputChanged.addListener((q, suggest) => {
