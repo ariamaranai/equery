@@ -36,7 +36,7 @@ onunhandledrejection = e => e.preventDefault();
                         "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
             ) + q.replace(/[^a-zA-Z+-]/g, "");
         }
-        await (index || i ? tabs.create({ url, index }) : tabs.update({ url }));
+        await (index || i ? tabs.create({ url, index, active: !1 }) : tabs.update({ url }));
         ++i;
       }
     }
