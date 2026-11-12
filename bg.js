@@ -1,11 +1,11 @@
 onunhandledrejection = e => e.preventDefault();
 {
   let { contextMenus, omnibox, runtime, tabs } = chrome;
-  let f = (_qs, id, index, url) => {
+  let f = async (_qs, id, index, url) => {
     let qs = _qs.split(/[,、]/);
-    let i = qs.length;
-    while (i) {
-      let q = qs[--i].trim();
+    let i = 0;
+    while (i < qs.length) {
+      let q = qs[i].trim();
       if (q) {
         q = q.normalize("NFKD").normalize("NFC");
         if (id == 2 || id != 3 && id != 4 && q[0] > "぀") {
@@ -36,7 +36,8 @@ onunhandledrejection = e => e.preventDefault();
                         "https://www.allbreedpedigree.com/index.php?query_type=check&search_bar=horse&g=5&inbred=Standard&h="
             ) + q.replace(/[^a-zA-Z+-]/g, "");
         }
-        index || i ? tabs.create({ url, index, active: !1 }) : tabs.update({ url, active: !1 });
+        await (index || i ? tabs.create({ url, index }) : tabs.update({ url }));
+        ++i;
       }
     }
   }
